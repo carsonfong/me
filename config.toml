@@ -1,6 +1,6 @@
-baseurl = "https://nanx.me/hugo-tanka/"
-title = "Hugo Tanka Theme"
-author = "Nan Xiao"
+baseurl = "https://carsonfong.netlify.app/"
+title = "Carson Fong"
+author = "Carson"
 canonifyurls = true
 languagecode = "en"
 theme = "hugo-tanka"
@@ -15,23 +15,23 @@ pygmentscodefences = true
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [params]
-  sitename = "Hugo Tanka Theme"
+  sitename = "Carson Fong"
 
 [[menu.main]]
     name = "Home"
-    url = "https://nanx.me"
+    url = "https://carsonfong.netlify.app/"
     weight = 1
 [[menu.main]]
     name = "GitHub"
-    url = "https://github.com/nanxstats"
+    url = "https://github.com/carsonfong"
     weight = 2
 [[menu.main]]
     name = "LinkedIn"
-    url = "https://www.linkedin.com/in/nanxstats"
+    url = "https://www.linkedin.com/in/carsonfong"
     weight = 3
 [[menu.main]]
     name = "Twitter"
-    url = "https://twitter.com/nanxstats"
+    url = "https://twitter.com/carsonfong"
     weight = 4
 [[menu.main]]
     name = "RSS"
