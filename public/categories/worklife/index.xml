@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>worklife on Carson Fong</title>
+    <link>/categories/worklife/</link>
+    <description>Recent content in worklife on Carson Fong</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 28 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/worklife/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mason Jar Storytelling</title>
+      <link>/post/mason-jar-storytelling/</link>
+      <pubDate>Wed, 28 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/mason-jar-storytelling/</guid>
+      <description>Effective communication is more than just ensuring your audience understands your idea. It also includes providing them the ability to share the idea with other people.
+By gifting your idea in a tidy story, you give your audience a vessel they can use to it pass on. A good story is like a good Tupperware container: compact, portable, and easy to use.
+It’s an obvious concept in the context of myths and fables, but often misunderstood at work.</description>
+    </item>
+    
+  </channel>
+</rss>
