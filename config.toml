@@ -1,11 +1,11 @@
-baseurl = "https://carsonfong.netlify.app/"
+baseurl = "https://carsonfong.ca/"
 title = "Carson Fong"
 author = "Carson"
 canonifyurls = true
 languagecode = "en"
 theme = "hugo-tanka"
 
-googleAnalytics = ""
+googleAnalytics = "G-C8JL659138"
 disqusShortname = ""
 disable_mathjax = false
 
