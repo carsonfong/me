@@ -45,6 +45,7 @@ blogdown::shortcode('tweet', '1255118770613485568')
 ```
 
 I was:
+
 - Disappointed that there wasn't a neat policy story here. 
 - Embarrassed that I didn't catch the labeling error. In hindsight, the anomalies were too outlandish to be true.
 - Grateful that Xan actually took the time to dig into the study as well. It was better to have this false story nipped in the bud than have it spread any further.
