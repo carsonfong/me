@@ -1,0 +1,96 @@
+---
+title: Ontario COVID-19 Response Framework Threshold Negotiations
+author: Carson
+date: '2020-11-21'
+slug: pho-and-the-province-of-ontario-negotiating-covid-thresholds
+categories:
+  - data
+tags: [dataviz]
+---
+
+In the first half of November, the Ontario government released a COVID-19 response framework, and then quickly made revisions to it when it was found that they differed drastically from the ones provided by the public health agency, Public Health Ontario. 
+
+The story was originally reported by [Jennifer Yang and Kate Allen at the Toronto Star](https://www.thestar.com/news/gta/2020/11/11/ontario-rejected-its-own-public-health-agencys-advice-when-it-launched-its-colour-coded-plan-for-covid-19-restrictions.html).
+
+On Twitter, Jennifer Yang provided a [helpful summary] of the original framework thresholds, the PHO recommendation, and the revised thresholds.
+```{r echo=FALSE}
+blogdown::shortcode('tweet', '1327344747774693376')
+```
+I wanted to build off this table and show just how far apart the province and PHO were.
+
+The colour-coded thresholds are based on two metrics, but I decided to just stick with one, Weekly Incidence Rate. The general trend would be similar for both, and so I didn't want to introduce unnecessary information.
+
+The thresholds define where each colour-range starts and stops. Something like a thermometer with the different ranges shown would make the most sense. Practically speaking, that'd be a stacked bar chart.
+
+The hard part was figuring out how to depict the upper end of the range.
+
+The theoretical limit for a Weekly Incidence Rate, which represents cases per 100 000 per week, would be 100 000. It wouldn't make sense to show that full range, because all of the change occurs below 100. And there isn't any significance 100 000 limit anyways - it is nearly impossible to reach and doesn't have much meaning other than being the value that would not be exceeded.
+
+At the same time, if a bar graph was to be used, there needed to be an axis limit drawn *somewhere*. Why 125 instead of 150? Why not 200? There isn't a value that are particularly strong case could be made.
+
+I opted to cut it off around 125 to show some of the red region while not making the difference in the other regions, which is the important part of the graph, too small. 
+
+```{r}
+library(tidyverse)
+
+levels <- read_csv("data/PHO_covid.csv")
+
+incident_levels <- levels %>%
+  select(plan, level, incid_upper) %>%
+  arrange(desc(incid_upper)) 
+
+plot <- incident_levels %>%
+  ggplot() +
+  geom_col(mapping = aes (x = plan, 
+                          y = incid_upper, 
+                          fill = level),
+           position = "identity") +
+  theme_minimal() +
+  labs(title = "Ontario's COVID-19 Response Framework Levels",
+       subtitle = "Weekly Incidence Rate (New cases per 100 000)",
+       caption = "Data Source: Jennifer Yang, Toronto Star (@jyangstar)",
+       y = "Weekly Incidence Rate",
+       x = "Plan") +
+
+  # Change order of plans
+  scale_x_discrete(limits = c("Province's revised plan (Nov 13)", 
+                              "Province's plan (Nov 3)",
+                              "PHO proposal"),
+                   labels = c("Province's revised plan (Nov 13)", 
+                              "Province's plan (Nov 3)",
+                              "Public Health of Ontario's \n recommendation")) +
+  
+  # Change colours to match zones
+  scale_fill_manual("Level",
+                    values = c("Prevent" = "#00cc00", 
+                               "Protect" = "yellow", 
+                               "Restrict" = "orange",
+                               "Control" = "red"),
+  # Change order of legend
+                    breaks = c("Prevent",
+                               "Protect",
+                               "Restrict",
+                               "Control")) +
+  # Set tick distances
+  scale_y_continuous(breaks = seq(0,120,10)) +
+  # Remove axis label
+  theme(
+    axis.title.y = element_blank(),
+    legend.position="top",
+    axis.text.y = element_text(size = 12)
+  ) +
+  # Rotate graph and also set limit
+  coord_flip(ylim = c(0,120))
+
+plot
+#ggsave(filename = "ON_COVID_fw.png", 
+ #      plot = plot, 
+  #     width = 7, height = 4, units = "in")
+```
+After generating the graph in R, I added a "cut" edge to the bar in GIMP to indicate that it's been truncated, and that the edge of the graph is not the edge of the possible range.
+
+![Ontario COVID-19 Response Framework Thresholds](/post/2020-11-14-pho-and-the-province-of-ontario-negotiating-covid-thresholds_files/ON_COVID_fw_2.png)
+
+It's not perfect, and the graph could use some other design improvements, but I'm pleased with the solution I came up with to reduce the possibility of misinterpretation. Ideally, it would've been nice to keep it all in R, but this was a simple enough workaround. 
+
+Let me know if you have another idea to visualize this information!

@@ -32,7 +32,7 @@ blogdown::shortcode('tweet', '1254144326243954688')
 
 The post was way more popular than I could've imagined, garnering 80000 impressions and 8000 engagements. It was by far the most viewed thing I had ever shared on the internet.
 
-![I have this framed in my living room (just kidding, it's my desktop wallpaper)](/img/2020/egg_tweet_stats.png)
+![Getting retweeted by Hadley Wickham was a quarantine highlight, to say the least ](/img/2020/egg_tweet_stats.png)
 
 Much of this can be attributed to a retweet by Hadley Wickham, Chief Scientist at RStudio and practically a demigod within the #rstats community. 
 

@@ -1,0 +1,13 @@
+plan,level,incid_upper,positivity_upper
+PHO proposal,Prevent,5,0.005
+PHO proposal,Protect,10,0.012
+PHO proposal,Restrict,25,0.025
+Province's plan (Nov 3),Prevent,10,0.01
+Province's plan (Nov 3),Protect,40,0.025
+Province's plan (Nov 3),Restrict,100,0.1
+Province's revised plan (Nov 13),Prevent,10,0.005
+Province's revised plan (Nov 13),Protect,25,0.012
+Province's revised plan (Nov 13),Restrict,40,0.025
+PHO proposal,Control,1000,1
+Province's plan (Nov 3),Control,1000,1
+Province's revised plan (Nov 13),Control,1000,1
