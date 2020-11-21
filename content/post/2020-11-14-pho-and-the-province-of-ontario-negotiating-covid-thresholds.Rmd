@@ -30,7 +30,7 @@ At the same time, if a bar graph was to be used, there needed to be an axis limi
 
 I opted to cut it off around 125 to show some of the red region while not making the difference in the other regions, which is the important part of the graph, too small. 
 
-```{r}
+```{r echo=False}
 library(tidyverse)
 
 levels <- read_csv("data/PHO_covid.csv")
