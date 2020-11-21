@@ -1,0 +1,99 @@
+---
+title: Ontario COVID-19 Response Framework Threshold Negotiations
+author: Carson
+date: '2020-11-21'
+slug: pho-and-the-province-of-ontario-negotiating-covid-thresholds
+categories:
+  - data
+tags: [dataviz]
+---
+
+
+
+<p>In the first half of November, the Ontario government released a COVID-19 response framework, and then quickly made revisions to it when it was found that they differed drastically from the ones provided by the public health agency, Public Health Ontario.</p>
+<p>The story was originally reported by <a href="https://www.thestar.com/news/gta/2020/11/11/ontario-rejected-its-own-public-health-agencys-advice-when-it-launched-its-colour-coded-plan-for-covid-19-restrictions.html">Jennifer Yang and Kate Allen at the Toronto Star</a>.</p>
+<p>On Twitter, Jennifer Yang provided a [helpful summary] of the original framework thresholds, the PHO recommendation, and the revised thresholds.
+{{% tweet "1327344747774693376" %}}
+I wanted to build off this table and show just how far apart the province and PHO were.</p>
+<p>The colour-coded thresholds are based on two metrics, but I decided to just stick with one, Weekly Incidence Rate. The general trend would be similar for both, and so I didn’t want to introduce unnecessary information.</p>
+<p>The thresholds define where each colour-range starts and stops. Something like a thermometer with the different ranges shown would make the most sense. Practically speaking, that’d be a stacked bar chart.</p>
+<p>The hard part was figuring out how to depict the upper end of the range.</p>
+<p>The theoretical limit for a Weekly Incidence Rate, which represents cases per 100 000 per week, would be 100 000. It wouldn’t make sense to show that full range, because all of the change occurs below 100. And there isn’t any significance 100 000 limit anyways - it is nearly impossible to reach and doesn’t have much meaning other than being the value that would not be exceeded.</p>
+<p>At the same time, if a bar graph was to be used, there needed to be an axis limit drawn <em>somewhere</em>. Why 125 instead of 150? Why not 200? There isn’t a value that are particularly strong case could be made.</p>
+<p>I opted to cut it off around 125 to show some of the red region while not making the difference in the other regions, which is the important part of the graph, too small.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages ------------------------------------------------------------------ tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.0     v purrr   0.3.4
+## v tibble  3.0.0     v dplyr   0.8.5
+## v tidyr   1.0.2     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts --------------------------------------------------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>levels &lt;- read_csv(&quot;data/PHO_covid.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   plan = col_character(),
+##   level = col_character(),
+##   incid_upper = col_double(),
+##   positivity_upper = col_double()
+## )</code></pre>
+<pre class="r"><code>incident_levels &lt;- levels %&gt;%
+  select(plan, level, incid_upper) %&gt;%
+  arrange(desc(incid_upper)) 
+
+plot &lt;- incident_levels %&gt;%
+  ggplot() +
+  geom_col(mapping = aes (x = plan, 
+                          y = incid_upper, 
+                          fill = level),
+           position = &quot;identity&quot;) +
+  theme_minimal() +
+  labs(title = &quot;Ontario&#39;s COVID-19 Response Framework Levels&quot;,
+       subtitle = &quot;Weekly Incidence Rate (New cases per 100 000)&quot;,
+       caption = &quot;Data Source: Jennifer Yang, Toronto Star (@jyangstar)&quot;,
+       y = &quot;Weekly Incidence Rate&quot;,
+       x = &quot;Plan&quot;) +
+
+  # Change order of plans
+  scale_x_discrete(limits = c(&quot;Province&#39;s revised plan (Nov 13)&quot;, 
+                              &quot;Province&#39;s plan (Nov 3)&quot;,
+                              &quot;PHO proposal&quot;),
+                   labels = c(&quot;Province&#39;s revised plan (Nov 13)&quot;, 
+                              &quot;Province&#39;s plan (Nov 3)&quot;,
+                              &quot;Public Health of Ontario&#39;s \n recommendation&quot;)) +
+  
+  # Change colours to match zones
+  scale_fill_manual(&quot;Level&quot;,
+                    values = c(&quot;Prevent&quot; = &quot;#00cc00&quot;, 
+                               &quot;Protect&quot; = &quot;yellow&quot;, 
+                               &quot;Restrict&quot; = &quot;orange&quot;,
+                               &quot;Control&quot; = &quot;red&quot;),
+  # Change order of legend
+                    breaks = c(&quot;Prevent&quot;,
+                               &quot;Protect&quot;,
+                               &quot;Restrict&quot;,
+                               &quot;Control&quot;)) +
+  # Set tick distances
+  scale_y_continuous(breaks = seq(0,120,10)) +
+  # Remove axis label
+  theme(
+    axis.title.y = element_blank(),
+    legend.position=&quot;top&quot;,
+    axis.text.y = element_text(size = 12)
+  ) +
+  # Rotate graph and also set limit
+  coord_flip(ylim = c(0,120))
+
+plot</code></pre>
+<p><img src="/post/2020-11-14-pho-and-the-province-of-ontario-negotiating-covid-thresholds_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>#ggsave(filename = &quot;ON_COVID_fw.png&quot;, 
+ #      plot = plot, 
+  #     width = 7, height = 4, units = &quot;in&quot;)</code></pre>
+<p>After generating the graph in R, I added a “cut” edge to the bar in GIMP to indicate that it’s been truncated, and that the edge of the graph is not the edge of the possible range.</p>
+<div class="figure">
+<img src="/post/2020-11-14-pho-and-the-province-of-ontario-negotiating-covid-thresholds_files/ON_COVID_fw_2.png" alt="Ontario COVID-19 Response Framework Thresholds" />
+<p class="caption">Ontario COVID-19 Response Framework Thresholds</p>
+</div>
+<p>It’s not perfect, and the graph could use some other design improvements, but I’m pleased with the solution I came up with to reduce the possibility of misinterpretation. Ideally, it would’ve been nice to keep it all in R, but this was a simple enough workaround.</p>
+<p>Let me know if you have another idea to visualize this information!</p>
