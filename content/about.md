@@ -4,7 +4,7 @@ author: Carson
 date: '2020-10-31'
 slug: about
 headless: true
-widget: contact
+widget: subscribe
 categories: []
 tags: []
 ---
