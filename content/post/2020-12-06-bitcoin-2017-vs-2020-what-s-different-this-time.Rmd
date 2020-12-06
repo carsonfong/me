@@ -1,0 +1,125 @@
+---
+title: 'Bitcoin 2017 vs 2020: what''s different this time?'
+author: Carson
+date: '2020-12-06'
+categories:
+  - data
+tags:
+  - crypto
+  - dataviz
+  - opendata
+slug: bitcoin-2017-vs-2020
+---
+
+The price of bitcoin returned to 2017 peak levels recently, but this time it did so without making as much noise.
+
+I looked at Google Trends data for the search term "bitcoin" globally, and plotted it on a time series alongside the price history.
+
+What we see is a very different relationship compared to what happened at the end of 2017. It suggests that something other than hype and fear of missing out (FOMO) is driving the price increase.
+
+I'm not going to get into exploring reasons why the price has moved this way, but rather just highlight a few learnings about R and the data.  
+
+```{r load-packages, warning=FALSE, message=FALSE, echo=FALSE}
+
+library(tidyverse)
+library(reshape2)
+
+```
+
+```{r load-data}
+
+# Load search popularity data
+btc_search <- read_csv('data/multiTimeline.csv', skip = 2)
+
+# Load price history data
+btc_price <- read_csv('data/BTC-USD.csv')
+
+# Create one combined table. Use btc_search as base, because that is weekly data so it has fewer rows
+btc <- left_join(btc_search, btc_price, by = c("Week" = "Date")) %>%
+  select(Week, "Price (USD)" = 'Adj Close', "Search Interest" = "bitcoin: (Worldwide)") %>%
+  filter(Week > '2017-01-01') %>%
+  melt(id = c("Week"))
+
+```
+
+```{r graph}
+
+btc_plot <- ggplot(btc, aes(x = Week, y = value)) +
+  geom_line(aes(color = variable), size = 1) +
+  
+  # Switch moves the strip text to the left
+  facet_grid(variable ~ ., scales = "free_y", switch = "both") +
+  theme_minimal() +
+  labs(title = "Bitcoin Price and Relative Google Search Interest",
+     caption = "@carsonfong | Data Sources: Google Trends, yahoo! Finance from Nov 29, 2020"
+  ) +
+   theme(
+    legend.position = "none",
+    panel.grid = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_line(),
+    strip.text = element_text(size = 9)
+  )
+
+btc_plot
+
+```
+
+# Google Trends data is relative
+
+Google Trends provides popularity insights relative to the scope of the graph shown. If you look at the last 12 months of search history versus the last 5 years, the y-axis scale is actually different. The peak of the particular time period is considered "100", and everything else is measured relative to that.
+
+This is important to consider when doing analysis outside of the Google Trends dashboard. Analyzing popularity for a single search term over time is straightforward enough, as long as you're grabbing the data all at once with a large time period. You just have to be sure to communicate the time period you pulled, in case someone else wants to look at the data as well. In this case here, I looked at the last 5 years of search popularity for "bitcoin".
+
+The implications are larger if you're trying to compare multiple search terms. This is something you can only do within the dashboard. If you try to export data from individual terms, the data will be meaningless because the values are relative to the scope of the export. There isn't any transparency into the absolute popularity of the search term,
+
+# Use skip in read_csv to get to the data table
+
+Exporting data from Google Trends produces a .csv file that has a few extra rows on top of the data table.
+
+![Screenshot of the csv file from Google Trends](/post/2020-11-28-bitcoin-2017-vs-2020-what-s-different-this-time_files/btc_csv_header.png)
+
+To get around this in read_csv, simply define the number of rows before the table starts, with skip:
+
+```{r}
+# btc_google <- read_csv('data/multiTimeline.csv', skip = 2)
+```
+
+# When joining tables, specify differently named key columns with "by"
+
+By default, R will try to join tables by assuming the key columns are named the same.
+If they're not, it's easy to tell R which columns should be considered as the same using by:
+
+```{r}
+# btc_data <- left_join(btc_search, btc_price, by = c("Week" = "Date"))
+```
+
+
+# Use the reshape2 package to morph the data
+
+Sometimes, to create a specific visual, your data needs to be made wider or longer. In this case, I needed the data longer, so that I could stack the line graphs with facet.
+
+The reshape2 package made that a breeze with the melt function, which turned reduced columns into a single variables column
+
+```{r}
+# btc_data <- left_join(btc_search, btc_price, by = c("Week" = "Date")) %>%
+#   select(Week, "Price (USD)" = 'Adj Close', "Search Interest" = "bitcoin: (Worldwide)") %>%
+#   filter(Week > '2017-01-01') %>%
+#   melt(id = c("Week"))
+```
+
+# Data sources:
+
+Search popularity for "bitcoin" from [Google Trends](https://trends.google.com/trends/explore?date=today%205-y&q=bitcoin).
+
+Historical Bitcoin price in USD from [yahoo! Finance](https://finance.yahoo.com/quote/BTC-USD/history)
+
+
+```{r save-graph, warning=FALSE, message=FALSE, echo=FALSE}
+
+#ggsave(filename = "btc_price_20201128.png", 
+ # plot = btc_plot, 
+  #width = 5, height = 2.79, units = "in")
+
+```
+
