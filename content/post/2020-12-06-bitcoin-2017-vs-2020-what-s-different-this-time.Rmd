@@ -26,7 +26,7 @@ library(reshape2)
 
 ```
 
-```{r load-data}
+```{r load-data, warning=FALSE, message=FALSE, echo=FALSE}
 
 # Load search popularity data
 btc_search <- read_csv('data/multiTimeline.csv', skip = 2)
@@ -42,7 +42,7 @@ btc <- left_join(btc_search, btc_price, by = c("Week" = "Date")) %>%
 
 ```
 
-```{r graph}
+```{r graph, warning=FALSE, message=FALSE, echo=FALSE}
 
 btc_plot <- ggplot(btc, aes(x = Week, y = value)) +
   geom_line(aes(color = variable), size = 1) +
@@ -77,7 +77,6 @@ The implications are larger if you're trying to compare multiple search terms. T
 
 Exporting data from Google Trends produces a .csv file that has a few extra rows on top of the data table.
 
-![Screenshot of the csv file from Google Trends](/post/2020-11-28-bitcoin-2017-vs-2020-what-s-different-this-time_files/btc_csv_header.png)
 
 To get around this in read_csv, simply define the number of rows before the table starts, with skip:
 
